@@ -3,6 +3,7 @@ var express     = require("express"),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
     Campground  = require("./models/campgrounds"),
+    Comment    = require("./models/comment"),
     seedDB      = require("./seeds");
 
 //APP CONFIG        
@@ -22,7 +23,7 @@ app.get("/campgrounds", function(req, res){
             if(err){
                 console.log("ERR");
             }else{
-        res.render("campgrounds", {campgrounds : allCampgrounds});
+        res.render("campground/campgrounds", {campgrounds : allCampgrounds});
             }
         });
 });
@@ -44,15 +45,46 @@ app.post("/campgrounds",function(req, res){
 });
 
 app.get("/campgrounds/new", function(req, res){
-    res.render("new");
+    res.render("campground/new");
 });
 
-app.get("/campground/:id", function(req, res) {
-    Campground.findById(req.params.id, function(err, foundCampgound){
+app.get("/campgrounds/:id", function(req, res) {
+    
+    Campground.findById(req.params.id).populate("comments").exec(function(err, foundCampgound){
         if(err){
             console.log("ERROR");
         }else{
-            res.render("show", {campground: foundCampgound});    
+            res.render("campground/show", {campground: foundCampgound});    
+        }
+    });
+});
+
+//COMMENT Route
+app.get("/campgrounds/:id/comments/new", function(req, res){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, campgound){
+        if(err){
+            console.log("ERROR");
+        }else{
+            res.render("comment/new", {campground: campgound});    
+        }
+    });
+});
+
+app.post("/campgrounds/:id/comments", function(req, res){
+    Campground.findById(req.params.id).populate("comments").exec(function(err, campgound){
+        if(err){
+            console.log(err);
+            res.redirect("/campgrounds")
+        }else{
+            Comment.create(req.body.comment, function(err, comment){
+                   if(err){
+                       console.log(err);
+                   }else{
+                       campgound.comments.push(comment);
+                       campgound.save();
+                       res.redirect("/campgrounds/" + campgound._id)
+                   }
+                       });  
         }
     });
 });
