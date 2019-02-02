@@ -23,7 +23,7 @@ app.get("/campgrounds", function(req, res){
             if(err){
                 console.log("ERR");
             }else{
-        res.render("campground/campgrounds", {campgrounds : allCampgrounds});
+        res.render("campgrounds", {campgrounds : allCampgrounds});
             }
         });
 });
