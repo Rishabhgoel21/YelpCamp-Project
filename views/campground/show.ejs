@@ -20,6 +20,7 @@
         <h5 class="card-title"><%= campground.name %></h5>
         <hr>
         <p class="card-text"><%= campground.desc %></p>
+        <h6 class = "text-left"><%= campground.author.username %></h6>
       </div>
     </div>
     <div class="card">
@@ -34,7 +35,7 @@
             <div class="card">
               <div class="card-body">
                 <div class="float-left">
-                  <p class="card-title"><%= comment.author %></p>
+                  <p class="card-title"><%= comment.author.username %></p>
                   <p class="card-text"><%= comment.text %></p>
                 </div>
                 <div class="float-right">
